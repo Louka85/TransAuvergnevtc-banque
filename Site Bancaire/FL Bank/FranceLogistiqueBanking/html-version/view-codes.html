@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codes d'Accès - Auvergne Finance</title>
+    <meta name="theme-color" content="#09E4A0">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #09E4A0 0%, #076E52 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #09E4A0;
+        }
+
+        .header h1 {
+            color: #09E4A0;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #856404;
+        }
+
+        .warning strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .codes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .codes-table th {
+            background: #005a45;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .codes-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .codes-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .code-display {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #09E4A0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #005a45;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #076E52;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Codes d'Accès Auvergne Finance</h1>
+            <p>Liste de tous les codes d'accès de l'application</p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ ATTENTION - Informations Sensibles</strong>
+            <p>Ces codes sont affichés uniquement pour l'administration. Ne partagez cette page qu'avec les personnes autorisées.</p>
+        </div>
+
+        <div id="codesContainer">
+            <table class="codes-table">
+                <thead>
+                    <tr>
+                        <th>ID Employé</th>
+                        <th>Nom</th>
+                        <th>Identifiant</th>
+                        <th>Code d'Accès par Défaut</th>
+                        <th>Rôle</th>
+                    </tr>
+                </thead>
+                <tbody id="codesTableBody">
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i>🔍</i>
+                            <p>Chargement des codes...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="actions">
+            <button class="btn" onclick="refreshCodes()">
+                🔄 Actualiser
+            </button>
+            <button class="btn btn-secondary" onclick="window.print()">
+                🖨️ Imprimer
+            </button>
+            <a href="login.html" class="btn btn-secondary">
+                ← Retour à la connexion
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function loadCodes() {
+            try {
+                // Charger les utilisateurs
+                const users = JSON.parse(localStorage.getItem('fl_users') || '[]');
+                const employees = JSON.parse(localStorage.getItem('fl_employees') || '[]');
+
+                const tbody = document.getElementById('codesTableBody');
+                
+                if (users.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i>👤</i>
+                                <p>Aucun utilisateur trouvé</p>
+                                <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                                    Connectez-vous d'abord avec le compte admin :<br>
+                                    <strong>ADMIN001</strong> / <strong>admin123</strong>
+                                </p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = users.map(user => {
+                    const employee = employees.find(e => e.id === user.employeeId);
+                    const defaultPassword = user.employeeId.startsWith('FL') ? user.employeeId : 'admin123';
+                    
+                    return `
+                        <tr>
+                            <td><strong>${user.employeeId}</strong></td>
+                            <td>${user.firstName} ${user.lastName}</td>
+                            <td><span class="code-display">${user.username || user.employeeId}</span></td>
+                            <td><span class="code-display">${defaultPassword}</span></td>
+                            <td>${getRoleLabel(user.role)}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Ajouter une ligne pour l'admin si pas déjà présent
+                const hasAdmin = users.find(u => u.employeeId === 'ADMIN001');
+                if (!hasAdmin) {
+                    const adminRow = `
+                        <tr style="background: #fff3cd;">
+                            <td><strong>ADMIN001</strong></td>
+                            <td>Admin System</td>
+                            <td><span class="code-display">ADMIN001</span> ou <span class="code-display">admin</span></td>
+                            <td><span class="code-display">admin123</span></td>
+                            <td>Directeur Général</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML = adminRow + tbody.innerHTML;
+                }
+
+            } catch (error) {
+                document.getElementById('codesTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i>❌</i>
+                            <p>Erreur lors du chargement : ${error.message}</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function getRoleLabel(role) {
+            const roles = {
+                'chauffeur': 'Chauffeur',
+                'directeur_exécutif': 'Directeur Exécutif',
+                'ressources_humaines': 'Ressources Humaines',
+                'directeur_candidatures': 'Directeur Candidatures',
+                'equipe_media': 'Équipe Média',
+                'comptable': 'Comptable',
+            };
+            return roles[role] || role;
+        }
+
+        function refreshCodes() {
+            loadCodes();
+            alert('Codes actualisés !');
+        }
+
+        // Charger les codes au démarrage
+        loadCodes();
+    </script>
+</body>
+</html>
+

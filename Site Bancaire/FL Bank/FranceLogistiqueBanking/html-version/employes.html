@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auvergne Finance - Employés</title>
+    <meta name="description" content="Gestion des employés - Auvergne Finance">
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="js/theme.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="assets/logosansfond.svg" alt="Auvergne Finances Logo" class="logo-img">
+                </div>
+                <div class="brand">
+                    <h1>Auvergne Finance</h1>
+                    <p>Trans'Auvergne</p>
+                </div>
+            </div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <span class="nav-icon"><i class="ri-dashboard-line"></i></span>
+                            Tableau de Bord
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="employes.html">
+                            <span class="nav-icon"><i class="ri-team-line"></i></span>
+                            Employés
+                        </a>
+                    </li>
+                    <li>
+                        <a href="transactions.html">
+                            <span class="nav-icon"><i class="ri-exchange-funds-line"></i></span>
+                            Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="fiches-paie.html">
+                            <span class="nav-icon"><i class="ri-file-list-3-line"></i></span>
+                            Fiches de Paie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="rapports.html">
+                            <span class="nav-icon"><i class="ri-line-chart-line"></i></span>
+                            Rapports
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <footer class="sidebar-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="header-main">
+                    <h2>Gestion des Employés</h2>
+                    <div class="search-bar">
+                        <i class="ri-search-line"></i>
+                        <input type="text" placeholder="Rechercher un employé..." class="search-input">
+                    </div>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                    </div>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="ri-sun-line light-icon"></i>
+                        <i class="ri-moon-line dark-icon"></i>
+                    </button>
+                    <button class="btn-outline" onclick="AuthSystem.logout()" title="Déconnexion">
+                        <i class="ri-logout-box-line"></i>
+                    </button>
+                    <button class="btn-primary add-employee-btn">
+                        <i class="ri-user-add-line"></i> Ajouter Employé
+                    </button>
+                </div>
+            </header>
+
+            <!-- Employee Summary -->
+            <section class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>
+                        <i class="ri-team-line"></i>
+                        Effectif Total
+                    </h3>
+                    <p class="stat-value">5</p>
+                    <p class="stat-change">
+                        <i class="ri-user-star-line"></i>
+                        Chauffeurs Actifs
+                    </p>
+                </div>
+                <div class="stat-card">
+                    <h3>
+                        <i class="ri-road-map-line"></i>
+                        En Service
+                    </h3>
+                    <p class="stat-value">0</p>
+                    <p class="stat-change">
+                        <i class="ri-time-line"></i>
+                        Actuellement en Mission
+                    </p>
+                </div>
+                <div class="stat-card">
+                    <h3>
+                        <i class="ri-calendar-check-line"></i>
+                        Présence
+                    </h3>
+                    <p class="stat-value">0%</p>
+                    <p class="stat-change">
+                        <i class="ri-arrow-up-line"></i>
+                        Taux de Présence Mensuel
+                    </p>
+                </div>
+            </section>
+
+            <!-- Employee List -->
+            <section class="employee-grid">
+                <!-- Les employés seront chargés dynamiquement via JavaScript -->
+            </section>
+
+            <!-- Add Employee Modal -->
+            <div id="addEmployeeModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-user-add-line"></i>
+                        Nouvel Employé
+                    </h2>
+                    <form id="addEmployeeForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="firstName">Prénom <span class="required">*</span></label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Nom <span class="required">*</span></label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="birthDate">Date de naissance <span class="required">*</span></label>
+                                <input type="date" id="birthDate" name="birthDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hireDate">Date d'embauche <span class="required">*</span></label>
+                                <input type="date" id="hireDate" name="hireDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Poste au sein de FL <span class="required">*</span></label>
+                            <select id="role" name="role" required>
+                                <option value="">Sélectionnez un poste</option>
+                                <option value="chauffeur">Chauffeur</option>
+                                <option value="directeur_exécutif">Directeur Exécutif</option>
+                                <option value="ressources_humaines">Ressources Humaines</option>
+                                <option value="directeur_candidatures">Directeur Candidatures</option>
+                                <option value="equipe_media">Équipe Média</option>
+                                <option value="comptable">Comptable</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Professionnel</label>
+                            <input type="email" id="email" name="email" placeholder="Sera généré automatiquement si vide">
+                        </div>
+                        <div class="form-group">
+                            <label for="initialBalance">Solde Initial (€)</label>
+                            <input type="number" id="initialBalance" name="initialBalance" step="0.01" value="0.00" min="0" required>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-outline" onclick="closeAddEmployeeModal()">
+                                <i class="ri-close-line"></i>
+                                Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i>
+                                Valider
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Edit Employee Modal -->
+            <div id="editEmployeeModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-user-settings-line"></i>
+                        Modifier le Profil
+                    </h2>
+                    <form id="editEmployeeForm">
+                        <div class="form-group">
+                            <label for="editFirstName">Prénom *</label>
+                            <input type="text" id="editFirstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLastName">Nom *</label>
+                            <input type="text" id="editLastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" id="editEmail" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Poste *</label>
+                            <select id="editRole" name="role" required>
+                                <option value="">Sélectionner un poste...</option>
+                                <option value="directeur_general">Directeur Général</option>
+                                <option value="directeur_rh">Directeur Ressources Humaines</option>
+                                <option value="ressources_humaines">Ressources Humaines</option>
+                                <option value="equipe_media">Équipe Média</option>
+                                <option value="directeur_evenementiel">Directeur Événementiel</option>
+                                <option value="comptable">Comptable</option>
+                                <option value="formateur">Formateur</option>
+                                <option value="chauffeur">Chauffeur</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editBirthDate">Date de naissance *</label>
+                            <input type="date" id="editBirthDate" name="birthDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editHireDate">Date d'embauche *</label>
+                            <input type="date" id="editHireDate" name="hireDate" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="closeEditEmployeeModal()">
+                                <i class="ri-close-line"></i>
+                                Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i>
+                                Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <footer class="main-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/app-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script>
+        let currentEditingEmployeeId = null;
+
+        // Fonction pour fermer le modal d'édition
+        function closeEditEmployeeModal() {
+            const modal = document.getElementById('editEmployeeModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.getElementById('editEmployeeForm').reset();
+            currentEditingEmployeeId = null;
+        }
+
+        // Fonction pour fermer le modal
+        function closeAddEmployeeModal() {
+            const modal = document.getElementById('addEmployeeModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.getElementById('addEmployeeForm').reset();
+        }
+
+        // Fonction pour obtenir le label du rôle
+        function getRoleLabel(roleValue) {
+            const roles = AppData.getRoles();
+            const role = roles.find(r => r.value === roleValue);
+            return role ? role.label : roleValue;
+        }
+
+        // Fonction pour obtenir l'icône du rôle
+        function getRoleIcon(roleValue) {
+            const icons = {
+                'chauffeur': 'ri-truck-line',
+                'directeur_exécutif': 'ri-user-star-line',
+                'ressources_humaines': 'ri-user-settings-line',
+                'directeur_candidatures': 'ri-team-line',
+                'equipe_media': 'ri-camera-line',
+                'comptable': 'ri-calculator-line',
+            };
+            return icons[roleValue] || 'ri-user-line';
+        }
+
+        // Fonction pour formater la date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Fonction pour formater le montant
+        function formatAmount(amount) {
+            return new Intl.NumberFormat('fr-FR', { 
+                style: 'currency', 
+                currency: 'EUR' 
+            }).format(amount);
+        }
+
+        // Fonction pour afficher les employés
+        function renderEmployees() {
+            const employees = AppData.getEmployees();
+            const currentUser = AppData.getCurrentUser();
+            const employeeGrid = document.querySelector('.employee-grid');
+            
+            if (!employeeGrid) return;
+
+            // Filtrer selon les permissions
+            let employeesToShow = employees;
+            if (!AppData.canViewAllEmployees()) {
+                // Si l'utilisateur n'a pas les permissions, ne montrer que lui-même
+                employeesToShow = employees.filter(emp => emp.id === currentUser.id);
+            }
+
+            if (employeesToShow.length === 0) {
+                employeeGrid.innerHTML = `
+                    <div class="employee-empty-state active">
+                        <i class="ri-user-search-line"></i>
+                        <h3>Aucun employé trouvé</h3>
+                        <p>Utilisez le bouton "Ajouter Employé" pour commencer</p>
+                    </div>
+                `;
+                return;
+            }
+
+            employeeGrid.innerHTML = employeesToShow.map(employee => {
+                const roleLabel = getRoleLabel(employee.role);
+                const roleIcon = getRoleIcon(employee.role);
+                const status = employee.balance > 0 ? 'success' : 'pending';
+                const statusText = employee.balance > 0 ? 'Actif' : 'En attente';
+
+                return `
+                    <div class="employee-card" data-employee-id="${employee.id}">
+                        <div class="employee-header">
+                            <div class="employee-info">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(employee.firstName + ' ' + employee.lastName)}&background=005a45&color=fff" 
+                                     alt="${employee.firstName} ${employee.lastName}" class="employee-avatar">
+                                <div>
+                                    <h3>${employee.firstName} ${employee.lastName}</h3>
+                                    <p class="employee-role">
+                                        <i class="${roleIcon}"></i> ${roleLabel}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="status ${status}">${statusText}</span>
+                        </div>
+                        <div class="employee-details">
+                            <div class="detail-item">
+                                <i class="ri-profile-line"></i>
+                                <div>
+                                    <span class="detail-label">ID Employé</span>
+                                    <span class="detail-value">${employee.id}</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="ri-calendar-line"></i>
+                                <div>
+                                    <span class="detail-label">Date d'embauche</span>
+                                    <span class="detail-value">${formatDate(employee.hireDate)}</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="ri-bank-card-line"></i>
+                                <div>
+                                    <span class="detail-label">Solde compte</span>
+                                    <span class="detail-value">${formatAmount(employee.balance)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="employee-actions">
+                            <button class="btn-icon" title="Voir détails" onclick="viewEmployee('${employee.id}')">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                            ${AppData.canViewAllEmployees() ? `
+                                <button class="btn-icon" title="Modifier" onclick="editEmployee('${employee.id}')">
+                                    <i class="ri-edit-line"></i>
+                                </button>
+                                <button class="btn-icon" title="Fiches de paie" onclick="viewPayslips('${employee.id}')">
+                                    <i class="ri-file-list-3-line"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Gestion du modal d'ajout d'employé
+        const addEmployeeBtn = document.querySelector('.add-employee-btn');
+        const addEmployeeModal = document.getElementById('addEmployeeModal');
+        const addEmployeeForm = document.getElementById('addEmployeeForm');
+
+        if (addEmployeeBtn) {
+            addEmployeeBtn.addEventListener('click', () => {
+                // Vérifier les permissions
+                if (!AppData.canViewAllEmployees()) {
+                    alert('Vous n\'avez pas les permissions pour ajouter un employé.');
+                    return;
+                }
+                addEmployeeModal.style.display = 'block';
+                addEmployeeModal.classList.add('active');
+                // Définir la date d'aujourd'hui par défaut
+                document.getElementById('hireDate').valueAsDate = new Date();
+            });
+        }
+
+        // Fermer le modal d'édition en cliquant en dehors
+        window.addEventListener('click', (e) => {
+            const editModal = document.getElementById('editEmployeeModal');
+            if (e.target === addEmployeeModal) {
+                closeAddEmployeeModal();
+            }
+            if (e.target === editModal) {
+                closeEditEmployeeModal();
+            }
+        });
+
+        // Gestion du formulaire d'édition
+        const editEmployeeForm = document.getElementById('editEmployeeForm');
+        if (editEmployeeForm) {
+            editEmployeeForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const updates = {
+                    firstName: document.getElementById('editFirstName').value.trim(),
+                    lastName: document.getElementById('editLastName').value.trim(),
+                    email: document.getElementById('editEmail').value.trim(),
+                    role: document.getElementById('editRole').value,
+                    birthDate: document.getElementById('editBirthDate').value,
+                    hireDate: document.getElementById('editHireDate').value
+                };
+
+                if (!updates.firstName || !updates.lastName || !updates.role || !updates.birthDate || !updates.hireDate) {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                    return;
+                }
+
+                try {
+                    AppData.updateEmployee(currentEditingEmployeeId, updates);
+                    alert('Profil modifié avec succès !');
+                    closeEditEmployeeModal();
+                    renderEmployees();
+                    updateEmployeeStats();
+                } catch (error) {
+                    alert('Erreur lors de la modification: ' + error.message);
+                }
+            });
+        }
+
+        // Fermer le modal en cliquant en dehors
+        window.addEventListener('click', (e) => {
+            if (e.target === addEmployeeModal) {
+                closeAddEmployeeModal();
+            }
+        });
+
+        // Gestion du formulaire
+        if (addEmployeeForm) {
+            addEmployeeForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    firstName: document.getElementById('firstName').value.trim(),
+                    lastName: document.getElementById('lastName').value.trim(),
+                    birthDate: document.getElementById('birthDate').value,
+                    hireDate: document.getElementById('hireDate').value,
+                    role: document.getElementById('role').value,
+                    email: document.getElementById('email').value.trim(),
+                    initialBalance: document.getElementById('initialBalance').value || 0
+                };
+
+                // Validation
+                if (!formData.firstName || !formData.lastName || !formData.birthDate || !formData.hireDate || !formData.role) {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                    return;
+                }
+
+                try {
+                    const newEmployee = AppData.addEmployee(formData);
+                    alert(`Employé ${newEmployee.firstName} ${newEmployee.lastName} ajouté avec succès !\nID: ${newEmployee.id}`);
+                    closeAddEmployeeModal();
+                    renderEmployees();
+                    updateEmployeeStats();
+                } catch (error) {
+                    alert('Erreur lors de l\'ajout de l\'employé: ' + error.message);
+                }
+            });
+        }
+
+        // Recherche d'employés
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const employeeCards = document.querySelectorAll('.employee-card');
+                
+                employeeCards.forEach(card => {
+                    const name = card.querySelector('h3').textContent.toLowerCase();
+                    const role = card.querySelector('.employee-role').textContent.toLowerCase();
+                    const id = card.querySelector('.detail-value').textContent.toLowerCase();
+                    
+                    if (name.includes(searchTerm) || role.includes(searchTerm) || id.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Fonction pour mettre à jour les statistiques
+        function updateEmployeeStats() {
+            const employees = AppData.getEmployees();
+            const totalEmployees = employees.length;
+            const activeEmployees = employees.filter(emp => emp.role === 'chauffeur').length;
+            const presenceRate = totalEmployees > 0 ? Math.round(((totalEmployees - activeEmployees) / totalEmployees) * 100) : 0;
+
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards.length >= 3) {
+                statCards[0].querySelector('.stat-value').textContent = totalEmployees;
+                statCards[1].querySelector('.stat-value').textContent = activeEmployees;
+                statCards[2].querySelector('.stat-value').textContent = presenceRate + '%';
+            }
+        }
+
+        // Fonctions pour les actions
+        function viewEmployee(id) {
+            const employee = AppData.getEmployeeById(id);
+            if (!employee) return;
+            
+            if (!AppData.canViewEmployee(AppData.getCurrentUser().id, id)) {
+                alert('Vous n\'avez pas les permissions pour voir cet employé.');
+                return;
+            }
+
+            alert(`Informations de l'employé:\n\n` +
+                  `Nom: ${employee.firstName} ${employee.lastName}\n` +
+                  `ID: ${employee.id}\n` +
+                  `Poste: ${getRoleLabel(employee.role)}\n` +
+                  `Date d'embauche: ${formatDate(employee.hireDate)}\n` +
+                  `Solde: ${formatAmount(employee.balance)}`);
+        }
+
+        function editEmployee(id) {
+            const employee = AppData.getEmployeeById(id);
+            if (!employee) return;
+
+            currentEditingEmployeeId = id;
+            document.getElementById('editFirstName').value = employee.firstName;
+            document.getElementById('editLastName').value = employee.lastName;
+            document.getElementById('editEmail').value = employee.email || '';
+            document.getElementById('editRole').value = employee.role;
+            document.getElementById('editBirthDate').value = employee.birthDate || '';
+            document.getElementById('editHireDate').value = employee.hireDate || '';
+
+            const editModal = document.getElementById('editEmployeeModal');
+            editModal.style.display = 'block';
+            editModal.classList.add('active');
+        }
+
+        function viewPayslips(id) {
+            window.location.href = `fiches-paie.html?employee=${id}`;
+        }
+
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            // Nettoyer les données au premier chargement
+            const resetFlag = localStorage.getItem('fl_data_reset');
+            if (!resetFlag) {
+                // Réinitialiser toutes les données
+                AppData.resetAllData();
+                localStorage.setItem('fl_data_reset', 'true');
+                console.log('Données réinitialisées');
+            }
+
+            renderEmployees();
+            updateEmployeeStats();
+        });
+    </script>
+</body>
+</html>

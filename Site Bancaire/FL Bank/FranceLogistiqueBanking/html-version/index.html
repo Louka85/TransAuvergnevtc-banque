@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auvergne Finance - Gestion Virtuelle</title>
+    <meta name="description" content="Application de gestion bancaire virtuelle pour Trans'Auvergne - Gérez employés, transferts et paiements pour votre entreprise de transport.">
+    <meta name="theme-color" content="#09E4A0">
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="js/theme.js" defer></script>
+</head>
+<body>
+    <script src="js/app-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <div class="app-container">
+        <!-- Modern Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="assets/logosansfond.svg" alt="Auvergne Finances Logo" class="logo-img">
+                </div>
+                <div class="brand">
+                    <h1>Auvergne Finance</h1>
+                    <p>Trans'Auvergne</p>
+                </div>
+            </div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li class="active">
+                        <a href="index.html">
+                            <span class="nav-icon"><i class="ri-dashboard-line"></i></span>
+                            Tableau de Bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="employes.html">
+                            <span class="nav-icon"><i class="ri-team-line"></i></span>
+                            Employés
+                        </a>
+                    </li>
+                    <li>
+                        <a href="transactions.html">
+                            <span class="nav-icon"><i class="ri-exchange-funds-line"></i></span>
+                            Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="fiches-paie.html">
+                            <span class="nav-icon"><i class="ri-file-list-3-line"></i></span>
+                            Fiches de Paie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="rapports.html">
+                            <span class="nav-icon"><i class="ri-line-chart-line"></i></span>
+                            Rapports
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Tableau de Bord</h2>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                    </div>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="ri-sun-line light-icon"></i>
+                        <i class="ri-moon-line dark-icon"></i>
+                    </button>
+                    <button class="btn-outline" onclick="AuthSystem.logout()" title="Déconnexion">
+                        <i class="ri-logout-box-line"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Statistics -->
+            <section class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>
+                        <i class="ri-money-euro-circle-line"></i>
+                        Solde Total
+                    </h3>
+                    <p class="stat-value">€0.00</p>
+                    <p class="stat-change">
+                        <i class="ri-arrow-right-line"></i>
+                        Aucune variation
+                    </p>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>
+                        <i class="ri-team-line"></i>
+                        Chauffeurs Actifs
+                    </h3>
+                    <p class="stat-value">5</p>
+                    <p class="stat-change">
+                        <i class="ri-user-star-line"></i>
+                        Effectif total
+                    </p>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>
+                        <i class="ri-exchange-funds-line"></i>
+                        Transactions
+                    </h3>
+                    <p class="stat-value">0</p>
+                    <p class="stat-change">
+                        <i class="ri-calendar-line"></i>
+                        Derniers 30 jours
+                    </p>
+                </div>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section class="recent-transactions">
+                <h3>
+                    <i class="ri-history-line"></i>
+                    Transactions Récentes
+                </h3>
+                <div class="table-container">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <i class="ri-calendar-2-line"></i>
+                                    01/01/2026
+                                </td>
+                                <td>Aucune transaction</td>
+                                <td>€0.00</td>
+                                <td>
+                                    <span class="status pending">
+                                        <i class="ri-time-line"></i>
+                                        En attente
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <footer class="main-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Enregistrer le Service Worker pour PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker enregistré:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Erreur Service Worker:', error);
+                    });
+            });
+        }
+
+        // Mettre à jour les statistiques au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            // Réinitialiser les données si nécessaire
+            const resetFlag = localStorage.getItem('fl_data_reset');
+            if (!resetFlag) {
+                AppData.resetAllData();
+                localStorage.setItem('fl_data_reset', 'true');
+            }
+
+            // Afficher les statistiques
+            function updateDashboardStats() {
+                const account = AppData.getFLAccount();
+                const employees = AppData.getEmployees();
+                const statCards = document.querySelectorAll('.stat-card');
+
+                if (statCards.length >= 3) {
+                    // Solde total
+                    const balanceFormatted = new Intl.NumberFormat('fr-FR', {
+                        style: 'currency',
+                        currency: 'EUR'
+                    }).format(account.balance);
+                    statCards[0].querySelector('.stat-value').textContent = balanceFormatted;
+
+                    // Effectif total
+                    statCards[1].querySelector('.stat-value').textContent = employees.length;
+
+                    // Transactions
+                    statCards[2].querySelector('.stat-value').textContent = account.transactions ? account.transactions.length : 0;
+                }
+
+                // Mettre à jour la table des transactions
+                const tbody = document.querySelector('.transactions-table tbody');
+                if (account.transactions && account.transactions.length > 0) {
+                    tbody.innerHTML = account.transactions.slice(0, 5).map(t => `
+                        <tr>
+                            <td>
+                                <i class="ri-calendar-2-line"></i>
+                                ${new Date(t.date).toLocaleDateString('fr-FR')}
+                            </td>
+                            <td>${t.description}</td>
+                            <td>${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(t.amount)}</td>
+                            <td>
+                                <span class="status ${t.type === 'credit' ? 'success' : 'pending'}">
+                                    <i class="ri-${t.type === 'credit' ? 'arrow-down' : 'arrow-up'}-line"></i>
+                                    ${t.type === 'credit' ? 'Crédit' : 'Débit'}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            updateDashboardStats();
+        });
+    </script>
+</body>
+</html>

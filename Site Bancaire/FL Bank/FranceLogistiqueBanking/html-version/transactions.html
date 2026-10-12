@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - France Logistique Banking</title>
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="js/theme.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">
+                        <img src="assets/logosansfond.svg" alt="Auvergne Finances Logo" class="logo-img">
+                    </div>
+                    <div class="brand">
+                        <h1>FL Bank</h1>
+                        <p>France Logistique</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <span class="nav-icon"><i class="ri-dashboard-line"></i></span>
+                            Tableau de Bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="employes.html">
+                            <span class="nav-icon"><i class="ri-team-line"></i></span>
+                            Employés
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="transactions.html">
+                            <span class="nav-icon"><i class="ri-exchange-funds-line"></i></span>
+                            Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="fiches-paie.html">
+                            <span class="nav-icon"><i class="ri-file-list-3-line"></i></span>
+                            Fiches de Paie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="rapports.html">
+                            <span class="nav-icon"><i class="ri-line-chart-line"></i></span>
+                            Rapports
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Transactions</h2>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                    </div>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="ri-sun-line light-icon"></i>
+                        <i class="ri-moon-line dark-icon"></i>
+                    </button>
+                    <button class="btn-outline" onclick="AuthSystem.logout()" title="Déconnexion">
+                        <i class="ri-logout-box-line"></i>
+                    </button>
+                    <button class="btn-primary" id="newTransactionBtn">
+                        <i class="ri-add-line"></i> Nouvelle Transaction
+                    </button>
+                </div>
+            </header>
+
+            <!-- Compte France Logistique -->
+            <section class="fl-account-section">
+                <div class="fl-account-card">
+                    <div class="fl-account-header">
+                        <div>
+                            <h3>
+                                <i class="ri-bank-line"></i>
+                                Compte France Logistique
+                            </h3>
+                            <p class="fl-account-subtitle">Compte principal de l'entreprise</p>
+                        </div>
+                        <button class="btn-outline" id="addFundsBtn" title="Ajouter des fonds">
+                            <i class="ri-add-line"></i> Ajouter des fonds
+                        </button>
+                    </div>
+                    <div class="fl-account-balance">
+                        <span class="balance-label">Solde disponible</span>
+                        <span class="balance-amount" id="flAccountBalance">€0.00</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transaction Tabs -->
+            <section class="transaction-tabs">
+                <button class="tab-btn active" data-tab="all">
+                    <i class="ri-list-check"></i> Toutes
+                </button>
+                <button class="tab-btn" data-tab="salaries">
+                    <i class="ri-money-euro-circle-line"></i> Salaires
+                </button>
+                <button class="tab-btn" data-tab="transfers">
+                    <i class="ri-exchange-line"></i> Transferts
+                </button>
+                <button class="tab-btn" data-tab="deposits">
+                    <i class="ri-arrow-down-circle-line"></i> Dépôts
+                </button>
+            </section>
+
+            <!-- Transactions List -->
+            <section class="transactions-section">
+                <div class="transactions-filters">
+                    <div class="search-bar">
+                        <i class="ri-search-line"></i>
+                        <input type="text" id="transactionSearch" placeholder="Rechercher une transaction..." class="search-input">
+                    </div>
+                    <select class="filter-select" id="transactionFilter">
+                        <option value="all">Toutes les transactions</option>
+                        <option value="today">Aujourd'hui</option>
+                        <option value="week">Cette semaine</option>
+                        <option value="month">Ce mois</option>
+                        <option value="year">Cette année</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>De / Vers</th>
+                                <th>Description</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">Chargement des transactions...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- New Transaction Modal -->
+            <div id="newTransactionModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-exchange-funds-line"></i>
+                        Nouvelle Transaction
+                    </h2>
+                    <div class="transaction-type-selector">
+                        <button class="type-btn active" data-type="salary">
+                            <i class="ri-money-euro-circle-line"></i>
+                            Paiement de salaire
+                        </button>
+                        <button class="type-btn" data-type="transfer">
+                            <i class="ri-exchange-line"></i>
+                            Transfert entre employés
+                        </button>
+                    </div>
+                    
+                    <!-- Formulaire Paiement de salaire -->
+                    <form id="salaryPaymentForm" class="transaction-form active">
+                        <div class="form-group">
+                            <label for="salaryEmployee">Employé <span class="required">*</span></label>
+                            <select id="salaryEmployee" name="salaryEmployee" required>
+                                <option value="">Sélectionnez un employé</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="salaryAmount">Montant du salaire (€) <span class="required">*</span></label>
+                            <input type="number" id="salaryAmount" name="salaryAmount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="salaryPeriod">Période <span class="required">*</span></label>
+                            <input type="month" id="salaryPeriod" name="salaryPeriod" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="salaryDescription">Description</label>
+                            <input type="text" id="salaryDescription" name="salaryDescription" 
+                                   placeholder="Ex: Salaire du mois d'octobre" value="Salaire du mois">
+                        </div>
+                        <div class="payment-info">
+                            <p><i class="ri-information-line"></i> Le montant sera débité du compte France Logistique et crédité au compte de l'employé.</p>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="closeTransactionModal()">
+                                <i class="ri-close-line"></i> Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i> Valider le paiement
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Formulaire Transfert entre employés -->
+                    <form id="transferForm" class="transaction-form">
+                        <div class="form-group">
+                            <label for="transferFrom">De <span class="required">*</span></label>
+                            <select id="transferFrom" name="transferFrom" required>
+                                <option value="">Sélectionnez l'expéditeur</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transferTo">Vers <span class="required">*</span></label>
+                            <select id="transferTo" name="transferTo" required>
+                                <option value="">Sélectionnez le destinataire</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transferAmount">Montant (€) <span class="required">*</span></label>
+                            <input type="number" id="transferAmount" name="transferAmount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transferDescription">Description</label>
+                            <textarea id="transferDescription" name="transferDescription" rows="3" 
+                                      placeholder="Raison du transfert"></textarea>
+                        </div>
+                        <div class="payment-info">
+                            <p><i class="ri-information-line"></i> Le montant sera débité du compte de l'expéditeur et crédité au compte du destinataire.</p>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="closeTransactionModal()">
+                                <i class="ri-close-line"></i> Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i> Effectuer le transfert
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Funds Modal -->
+            <div id="addFundsModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-add-circle-line"></i>
+                        Ajouter des fonds au compte FL
+                    </h2>
+                    <form id="addFundsForm">
+                        <div class="form-group">
+                            <label for="fundsAmount">Montant à ajouter (€) <span class="required">*</span></label>
+                            <input type="number" id="fundsAmount" name="fundsAmount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fundsDescription">Description</label>
+                            <input type="text" id="fundsDescription" name="fundsDescription" 
+                                   placeholder="Ex: Capital initial, Dépôt, etc.">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="closeAddFundsModal()">
+                                <i class="ri-close-line"></i> Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i> Ajouter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/app-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/transactions.js"></script>
+</body>
+</html>
+

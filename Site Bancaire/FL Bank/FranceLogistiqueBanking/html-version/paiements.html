@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiements - Auvergne Finance</title>
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="js/theme.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">
+                        <img src="assets/logosansfond.svg" alt="Auvergne Finances Logo" class="logo-img">
+                    </div>
+                    <div class="brand">
+                        <h1>Auvergne Finance</h1>
+                        <p>Trans'Auvergne</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <span class="nav-icon"><i class="ri-dashboard-line"></i></span>
+                            Tableau de Bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="employes.html">
+                            <span class="nav-icon"><i class="ri-team-line"></i></span>
+                            Employés
+                        </a>
+                    </li>
+                    <li>
+                        <a href="transferts.html">
+                            <span class="nav-icon"><i class="ri-exchange-line"></i></span>
+                            Transferts
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="paiements.html">
+                            <span class="nav-icon"><i class="ri-bank-card-line"></i></span>
+                            Paiements
+                        </a>
+                    </li>
+                    <li>
+                        <a href="fiches-paie.html">
+                            <span class="nav-icon"><i class="ri-file-list-3-line"></i></span>
+                            Fiches de Paie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="rapports.html">
+                            <span class="nav-icon"><i class="ri-line-chart-line"></i></span>
+                            Rapports
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Paiements</h2>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                    </div>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="ri-sun-line light-icon"></i>
+                        <i class="ri-moon-line dark-icon"></i>
+                    </button>
+                    <button class="btn-primary" onclick="document.getElementById('newPaymentModal').style.display='block'">
+                        <i class="ri-add-line"></i> Nouveau Paiement
+                    </button>
+                </div>
+            </header>
+
+            <!-- Compte France Logistique -->
+            <section class="fl-account-section">
+                <div class="fl-account-card">
+                    <div class="fl-account-header">
+                        <div>
+                            <h3>
+                                <i class="ri-bank-line"></i>
+                                Compte Trans'Auvergne
+                            </h3>
+                            <p class="fl-account-subtitle">Compte principal de l'entreprise</p>
+                        </div>
+                        <button class="btn-outline" onclick="showAddFundsModal()" title="Ajouter des fonds">
+                            <i class="ri-add-line"></i> Ajouter des fonds
+                        </button>
+                    </div>
+                    <div class="fl-account-balance">
+                        <span class="balance-label">Solde disponible</span>
+                        <span class="balance-amount" id="flAccountBalance">€0.00</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payment Categories -->
+            <section class="payment-categories">
+                <div class="category-card">
+                    <div class="category-icon">💰</div>
+                    <h3>Salaires</h3>
+                    <p id="totalSalaries">€0.00 Total</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">⚡</div>
+                    <h3>Services</h3>
+                    <p>€0.00 Total</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🛠️</div>
+                    <h3>Maintenance</h3>
+                    <p>€0.00 Total</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">📦</div>
+                    <h3>Fournitures</h3>
+                    <p>€0.00 Total</p>
+                </div>
+            </section>
+
+            <!-- Recent Payments -->
+            <section class="payments-section">
+                <h3>Paiements Récents</h3>
+                <table class="payments-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Bénéficiaire</th>
+                            <th>Catégorie</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01/01/2026</td>
+                            <td>-</td>
+                            <td>Salaires</td>
+                            <td>€0.00</td>
+                            <td><span class="status pending">En attente</span></td>
+                            <td>
+                                <button class="btn-icon">👁️</button>
+                                <button class="btn-icon">🖨️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>01/01/2026</td>
+                            <td>-</td>
+                            <td>Services</td>
+                            <td>€0.00</td>
+                            <td><span class="status pending">En attente</span></td>
+                            <td>
+                                <button class="btn-icon">👁️</button>
+                                <button class="btn-icon">🖨️</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- New Payment Modal -->
+            <div id="newPaymentModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-money-euro-circle-line"></i>
+                        Nouveau Paiement de Salaire
+                    </h2>
+                    <form id="newPaymentForm">
+                        <div class="form-group">
+                            <label for="paymentEmployee">Employé <span class="required">*</span></label>
+                            <select id="paymentEmployee" name="paymentEmployee" required>
+                                <option value="">Sélectionnez un employé</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentAmount">Montant du salaire (€) <span class="required">*</span></label>
+                            <input type="number" id="paymentAmount" name="paymentAmount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentPeriod">Période <span class="required">*</span></label>
+                            <input type="month" id="paymentPeriod" name="paymentPeriod" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentDescription">Description</label>
+                            <input type="text" id="paymentDescription" name="paymentDescription" 
+                                   placeholder="Ex: Salaire du mois d'octobre" value="Salaire du mois">
+                        </div>
+                        <div class="payment-info">
+                            <p><i class="ri-information-line"></i> Le montant sera débité du compte France Logistique et crédité au compte de l'employé.</p>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="closePaymentModal()">
+                                <i class="ri-close-line"></i> Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i> Valider le paiement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Funds Modal -->
+            <div id="addFundsModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-add-circle-line"></i>
+                        Ajouter des fonds au compte Trans'Auvergne
+                    </h2>
+                    <form id="addFundsForm">
+                        <div class="form-group">
+                            <label for="fundsAmount">Montant à ajouter (€) <span class="required">*</span></label>
+                            <input type="number" id="fundsAmount" name="fundsAmount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fundsDescription">Description</label>
+                            <input type="text" id="fundsDescription" name="fundsDescription" 
+                                   placeholder="Ex: Capital initial, Dépôt, etc.">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="closeAddFundsModal()">
+                                <i class="ri-close-line"></i> Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i> Ajouter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <footer class="main-footer">
+                <p>Version 1.0.0 - Virtuel</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="js/app-data.js"></script>
+    <script>
+        // Fonction pour formater le montant
+        function formatAmount(amount) {
+            return new Intl.NumberFormat('fr-FR', { 
+                style: 'currency', 
+                currency: 'EUR' 
+            }).format(amount);
+        }
+
+        // Fonction pour formater la date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Charger les données
+        function loadPaymentData() {
+            // Mettre à jour le solde du compte Trans'Auvergne
+            const account = AppData.getFLAccount();
+            document.getElementById('flAccountBalance').textContent = formatAmount(account.balance);
+
+            // Charger la liste des employés dans le select
+            const employees = AppData.getEmployees();
+            const employeeSelect = document.getElementById('paymentEmployee');
+            employeeSelect.innerHTML = '<option value="">Sélectionnez un employé</option>';
+            
+            employees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = `${employee.firstName} ${employee.lastName} (${employee.id})`;
+                employeeSelect.appendChild(option);
+            });
+
+            // Charger les transactions récentes
+            renderRecentPayments();
+        }
+
+        // Afficher les paiements récents
+        function renderRecentPayments() {
+            const account = AppData.getFLAccount();
+            const transactions = account.transactions
+                .filter(t => t.type === 'debit')
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 10);
+
+            const tbody = document.querySelector('.payments-table tbody');
+            if (!tbody) return;
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Aucun paiement effectué</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = transactions.map(transaction => {
+                return `
+                    <tr>
+                        <td>${formatDate(transaction.date)}</td>
+                        <td>${transaction.employeeName || '-'}</td>
+                        <td>Salaires</td>
+                        <td>${formatAmount(transaction.amount)}</td>
+                        <td><span class="status success">Effectué</span></td>
+                        <td>
+                            <button class="btn-icon" title="Voir détails" onclick="viewTransaction('${transaction.id}')">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Fermer les modals
+        function closePaymentModal() {
+            const modal = document.getElementById('newPaymentModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.getElementById('newPaymentForm').reset();
+        }
+
+        function closeAddFundsModal() {
+            const modal = document.getElementById('addFundsModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.getElementById('addFundsForm').reset();
+        }
+
+        function showAddFundsModal() {
+            const modal = document.getElementById('addFundsModal');
+            modal.style.display = 'block';
+            modal.classList.add('active');
+        }
+
+        // Gestion du formulaire de paiement
+        const paymentForm = document.getElementById('newPaymentForm');
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const employeeId = document.getElementById('paymentEmployee').value;
+                const amount = document.getElementById('paymentAmount').value;
+                const period = document.getElementById('paymentPeriod').value;
+                const description = document.getElementById('paymentDescription').value || 'Salaire du mois';
+
+                if (!employeeId || !amount || !period) {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                    return;
+                }
+
+                const account = AppData.getFLAccount();
+                if (parseFloat(amount) > account.balance) {
+                    alert('Solde insuffisant sur le compte France Logistique.');
+                    return;
+                }
+
+                try {
+                    const success = AppData.paySalary(employeeId, amount, description, period);
+                    if (success) {
+                        alert('Paiement effectué avec succès !');
+                        closePaymentModal();
+                        loadPaymentData();
+                    } else {
+                        alert('Erreur lors du paiement.');
+                    }
+                } catch (error) {
+                    alert('Erreur: ' + error.message);
+                }
+            });
+        }
+
+        // Gestion du formulaire d'ajout de fonds
+        const addFundsForm = document.getElementById('addFundsForm');
+        if (addFundsForm) {
+            addFundsForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const amount = document.getElementById('fundsAmount').value;
+                const description = document.getElementById('fundsDescription').value || 'Ajout de fonds';
+
+                if (!amount || parseFloat(amount) <= 0) {
+                    alert('Veuillez entrer un montant valide.');
+                    return;
+                }
+
+                try {
+                    AppData.addToFLAccount(amount, description);
+                    alert('Fonds ajoutés avec succès !');
+                    closeAddFundsModal();
+                    loadPaymentData();
+                } catch (error) {
+                    alert('Erreur: ' + error.message);
+                }
+            });
+        }
+
+        // Fermer les modals en cliquant en dehors
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'newPaymentModal') {
+                closePaymentModal();
+            }
+            if (e.target.id === 'addFundsModal') {
+                closeAddFundsModal();
+            }
+        });
+
+        // Ouvrir le modal de paiement
+        const newPaymentBtn = document.querySelector('.btn-primary[onclick*="newPaymentModal"]');
+        if (newPaymentBtn) {
+            newPaymentBtn.setAttribute('onclick', '');
+            newPaymentBtn.addEventListener('click', () => {
+                const modal = document.getElementById('newPaymentModal');
+                modal.style.display = 'block';
+                modal.classList.add('active');
+                // Définir le mois actuel par défaut
+                const now = new Date();
+                document.getElementById('paymentPeriod').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            });
+        }
+
+        // Fonction pour voir une transaction
+        function viewTransaction(transactionId) {
+            const account = AppData.getFLAccount();
+            const transaction = account.transactions.find(t => t.id === transactionId);
+            if (transaction) {
+                alert(`Détails de la transaction:\n\n` +
+                      `Date: ${formatDate(transaction.date)}\n` +
+                      `Montant: ${formatAmount(transaction.amount)}\n` +
+                      `Type: ${transaction.type === 'debit' ? 'Débit' : 'Crédit'}\n` +
+                      `Description: ${transaction.description}\n` +
+                      `${transaction.employeeName ? `Employé: ${transaction.employeeName}` : ''}`);
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPaymentData();
+        });
+    </script>
+</body>
+</html>

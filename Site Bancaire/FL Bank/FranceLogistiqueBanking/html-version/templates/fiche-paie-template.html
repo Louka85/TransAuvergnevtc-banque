@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche de Paie - Template</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .payslip {
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .company-info {
+            float: left;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .document-title {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .employee-details, .payment-details {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f0f2f5;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="payslip">
+        <!-- Header -->
+        <div class="header">
+            <div class="company-info">
+                <div class="logo">
+                    <img src="../assets/logosansfond.svg" alt="Auvergne Finances Logo" class="watermark-logo">
+                </div>
+                <div>France Logistique</div>
+                <div>123 Rue de la Logistique</div>
+                <div>75000 Paris, France</div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+
+        <h1 class="document-title">FICHE DE PAIE</h1>
+
+        <!-- Employee Information -->
+        <div class="employee-details">
+            <table>
+                <tr>
+                    <th colspan="2">Informations Employé</th>
+                </tr>
+                <tr>
+                    <td>Nom et Prénom:</td>
+                    <td>{nom_prenom}</td>
+                </tr>
+                <tr>
+                    <td>Poste:</td>
+                    <td>{poste}</td>
+                </tr>
+                <tr>
+                    <td>Numéro d'employé:</td>
+                    <td>{numero_employe}</td>
+                </tr>
+                <tr>
+                    <td>Période:</td>
+                    <td>{periode}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Salary Details -->
+        <div class="payment-details">
+            <table>
+                <tr>
+                    <th>Description</th>
+                    <th>Base</th>
+                    <th>Taux</th>
+                    <th>Montant</th>
+                </tr>
+                <tr>
+                    <td>Salaire de base</td>
+                    <td>{base_hours} h</td>
+                    <td>{hourly_rate} €/h</td>
+                    <td>{base_salary} €</td>
+                </tr>
+                <tr>
+                    <td>Heures supplémentaires</td>
+                    <td>{overtime_hours} h</td>
+                    <td>{overtime_rate} €/h</td>
+                    <td>{overtime_amount} €</td>
+                </tr>
+                <tr>
+                    <td>Prime de transport</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>{transport_allowance} €</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3">Salaire Brut</td>
+                    <td>{gross_salary} €</td>
+                </tr>
+            </table>
+
+            <!-- Deductions -->
+            <table>
+                <tr>
+                    <th>Cotisations</th>
+                    <th>Base</th>
+                    <th>Taux</th>
+                    <th>Montant</th>
+                </tr>
+                <tr>
+                    <td>Sécurité sociale</td>
+                    <td>{gross_salary} €</td>
+                    <td>{social_security_rate}%</td>
+                    <td>{social_security_amount} €</td>
+                </tr>
+                <tr>
+                    <td>Retraite</td>
+                    <td>{gross_salary} €</td>
+                    <td>{pension_rate}%</td>
+                    <td>{pension_amount} €</td>
+                </tr>
+                <tr>
+                    <td>Chômage</td>
+                    <td>{gross_salary} €</td>
+                    <td>{unemployment_rate}%</td>
+                    <td>{unemployment_amount} €</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3">Total des cotisations</td>
+                    <td>{total_deductions} €</td>
+                </tr>
+            </table>
+
+            <!-- Net Salary -->
+            <table>
+                <tr class="total-row">
+                    <td colspan="3">NET À PAYER</td>
+                    <td>{net_salary} €</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Document généré le {date_generation}</p>
+            <p>France Logistique Banking - SIRET: 123 456 789 00001</p>
+            <p>Ce document est un justificatif de paiement à conserver sans limitation de durée</p>
+        </div>
+    </div>
+</body>
+</html>

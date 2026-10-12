@@ -1,0 +1,43 @@
+{
+  "name": "FL Banking - France Logistique",
+  "short_name": "FL Banking",
+  "description": "Application de gestion bancaire virtuelle pour France Logistique",
+  "start_url": "./download.html",
+  "display": "standalone",
+  "background_color": "#09E4A0",
+  "theme_color": "#09E4A0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "business"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Tableau de bord",
+      "short_name": "Dashboard",
+      "description": "Accéder au tableau de bord",
+      "url": "./index.html",
+      "icons": [{ "src": "assets/logo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Transactions",
+      "short_name": "Transactions",
+      "description": "Voir les transactions",
+      "url": "./transactions.html",
+      "icons": [{ "src": "assets/logo.png", "sizes": "96x96" }]
+    }
+  ]
+}
+

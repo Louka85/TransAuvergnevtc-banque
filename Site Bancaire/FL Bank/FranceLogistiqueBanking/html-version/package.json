@@ -1,0 +1,14 @@
+{
+  "name": "fl-banking",
+  "version": "1.0.0",
+  "description": "Application de gestion bancaire virtuelle pour France Logistique",
+  "scripts": {
+    "start": "http-server -p 8000 -c-1",
+    "deploy:surge": "surge .",
+    "deploy:firebase": "firebase deploy"
+  },
+  "keywords": ["pwa", "banking", "finance"],
+  "author": "France Logistique",
+  "license": "MIT"
+}
+

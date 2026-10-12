@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09E4A0">
+    <title>Connexion - Auvergne Finance</title>
+    <link rel="manifest" href="manifest.json">
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #09E4A0 0%, #076E52 100%);
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--primary-color);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        .login-header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--muted-text);
+            font-size: 0.875rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-group input {
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            background: var(--card-background);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all var(--transition-quick);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 90, 69, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-quick);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn:hover {
+            background: #09E4A0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 90, 69, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all var(--transition-quick);
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(229, 62, 62, 0.1);
+            color: #e53e3e;
+            padding: 0.875rem;
+            border-radius: var(--border-radius-md);
+            font-size: 0.875rem;
+            text-align: center;
+            border: 1px solid rgba(229, 62, 62, 0.2);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            padding: 0.875rem;
+            border-radius: var(--border-radius-md);
+            font-size: 0.875rem;
+            text-align: center;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <img src="assets/logosansfond.svg" alt="Auvergne Finances" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <h1>Auvergne Finances</h1>
+                <p>Gestion Bancaire</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="ri-user-line"></i> Identifiants
+                    </label>
+                    <input type="text" id="username" name="username" placeholder="ID employé, nom d'utilisateur ou email" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="ri-lock-line"></i> Code d'accès
+                    </label>
+                    <input type="password" id="password" name="password" placeholder="Votre mot de passe" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <i class="ri-login-box-line"></i>
+                    Connexion
+                </button>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordLink">Identifiants ou code d'accès oublié ?</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Enregistrer le service worker pour PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker enregistré avec succès:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Échec de l\'enregistrement du Service Worker:', error);
+                    });
+            });
+        }
+
+        // Gestion du formulaire de connexion
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="ri-loader-4-line"></i> Connexion...';
+
+            try {
+                const success = await AuthSystem.login(username, password);
+                if (success) {
+                    successMessage.textContent = 'Connexion réussie ! Redirection...';
+                    successMessage.classList.add('show');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 500);
+                } else {
+                    errorMessage.textContent = 'Identifiants ou code d\'accès incorrect.';
+                    errorMessage.classList.add('show');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="ri-login-box-line"></i> Connexion';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Erreur lors de la connexion: ' + error.message;
+                errorMessage.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="ri-login-box-line"></i> Connexion';
+            }
+        });
+
+        // Gestion du lien "mot de passe oublié"
+        document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'forgot-password.html';
+        });
+    </script>
+</body>
+</html>
+

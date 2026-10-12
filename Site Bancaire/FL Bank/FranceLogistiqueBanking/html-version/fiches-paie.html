@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiches de Paie - Auvergne Finance</title>
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="js/theme.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">
+                        <img src="assets/logosansfond.svg" alt="Auvergne Finances Logo" class="logo-img">
+                    </div>
+                    <div class="brand">
+                        <h1>Auvergne Finance</h1>
+                        <p>Trans'Auvergne</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <span class="nav-icon"><i class="ri-dashboard-line"></i></span>
+                            Tableau de Bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="employes.html">
+                            <span class="nav-icon"><i class="ri-team-line"></i></span>
+                            Employés
+                        </a>
+                    </li>
+                    <li>
+                        <a href="transactions.html">
+                            <span class="nav-icon"><i class="ri-exchange-funds-line"></i></span>
+                            Transactions
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="fiches-paie.html">
+                            <span class="nav-icon"><i class="ri-file-list-3-line"></i></span>
+                            Fiches de Paie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="rapports.html">
+                            <span class="nav-icon"><i class="ri-line-chart-line"></i></span>
+                            Rapports
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Fiches de Paie</h2>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                    </div>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="ri-sun-line light-icon"></i>
+                        <i class="ri-moon-line dark-icon"></i>
+                    </button>
+                    <button class="btn-outline" onclick="AuthSystem.logout()" title="Déconnexion">
+                        <i class="ri-logout-box-line"></i>
+                    </button>
+                    <button class="btn-primary" onclick="document.getElementById('generatePayslipModal').style.display='block'">
+                        <i class="ri-add-line"></i> Générer Fiche de Paie
+                    </button>
+                </div>
+            </header>
+
+            <!-- Payslip Search and Filters -->
+            <section class="payslip-filters">
+                <div class="search-bar">
+                    <input type="text" id="payslipSearch" placeholder="Rechercher un employé..." class="search-input">
+                    <select class="month-select" id="payslipMonth">
+                        <option value="">Tous les mois</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Payslip Grid -->
+            <section class="payslip-grid" id="payslipGrid">
+                <!-- Les fiches de paie seront chargées dynamiquement -->
+            </section>
+
+            <!-- Generate Payslip Modal -->
+            <div id="generatePayslipModal" class="modal">
+                <div class="modal-content">
+                    <h2>
+                        <i class="ri-file-list-3-line"></i>
+                        Générer Fiche de Paie
+                    </h2>
+                    <form id="generatePayslipForm">
+                        <div class="form-group">
+                            <label for="employee">Employé <span class="required">*</span></label>
+                            <select id="employee" name="employee" required>
+                                <option value="">Sélectionnez un employé</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="payPeriod">Période <span class="required">*</span></label>
+                            <input type="month" id="payPeriod" name="payPeriod" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grossSalary">Salaire Brut (€) <span class="required">*</span></label>
+                            <input type="number" id="grossSalary" name="grossSalary" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bonuses">Primes (€)</label>
+                            <input type="number" id="bonuses" name="bonuses" step="0.01" value="0.00" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="deductions">Déductions (€)</label>
+                            <input type="number" id="deductions" name="deductions" step="0.01" value="0.00" min="0">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="closePayslipModal()">
+                                <i class="ri-close-line"></i> Annuler
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="ri-check-line"></i> Générer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <footer class="main-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/app-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/pdf-export.js"></script>
+    <script>
+        // Fonction pour formater le montant
+        function formatAmount(amount) {
+            return new Intl.NumberFormat('fr-FR', { 
+                style: 'currency', 
+                currency: 'EUR' 
+            }).format(amount);
+        }
+
+        // Fonction pour formater la date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Fonction pour obtenir le label du rôle
+        function getRoleLabel(roleValue) {
+            const roles = AppData.getRoles();
+            const role = roles.find(r => r.value === roleValue);
+            return role ? role.label : roleValue;
+        }
+
+        // Fermer le modal
+        function closePayslipModal() {
+            const modal = document.getElementById('generatePayslipModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.getElementById('generatePayslipForm').reset();
+        }
+
+        // Charger les fiches de paie
+        function loadPayslips() {
+            const currentUser = AppData.getCurrentUser();
+            const allPayslips = AppData.getPayslips();
+            const employees = AppData.getEmployees();
+            
+            let payslipsToShow = [];
+            
+            // Filtrer selon les permissions
+            if (AppData.canViewAllEmployees()) {
+                payslipsToShow = allPayslips;
+            } else {
+                // L'utilisateur ne peut voir que ses propres fiches de paie
+                payslipsToShow = allPayslips.filter(p => p.employeeId === currentUser.id);
+            }
+
+            // Récupérer le paramètre employee depuis l'URL si présent
+            const urlParams = new URLSearchParams(window.location.search);
+            const employeeId = urlParams.get('employee');
+            if (employeeId && AppData.canViewEmployee(currentUser.id, employeeId)) {
+                payslipsToShow = allPayslips.filter(p => p.employeeId === employeeId);
+            }
+
+            renderPayslips(payslipsToShow, employees);
+            populateEmployeeSelect();
+            populateMonthSelect(allPayslips);
+        }
+
+        // Afficher les fiches de paie
+        function renderPayslips(payslips, employees) {
+            const grid = document.getElementById('payslipGrid');
+            if (!grid) return;
+
+            if (payslips.length === 0) {
+                grid.innerHTML = `
+                    <div class="payslip-card empty-state">
+                        <div class="empty-message">
+                            <i class="ri-file-list-3-line" style="font-size: 3rem; color: var(--muted-text); margin-bottom: 1rem;"></i>
+                            <p>Aucune fiche de paie disponible</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Trier par date (plus récent en premier)
+            payslips.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            grid.innerHTML = payslips.map(payslip => {
+                const employee = employees.find(e => e.id === payslip.employeeId);
+                const periodDate = new Date(payslip.period + '-01');
+                const periodLabel = periodDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+
+                return `
+                    <div class="payslip-card">
+                        <div class="payslip-header">
+                            <div>
+                                <h3>${payslip.employeeName}</h3>
+                                <p class="payslip-period">${periodLabel}</p>
+                            </div>
+                            <span class="status success">Payé</span>
+                        </div>
+                        <div class="payslip-details">
+                            <div class="payslip-row">
+                                <span>Salaire brut:</span>
+                                <strong>${formatAmount(payslip.grossSalary)}</strong>
+                            </div>
+                            ${payslip.bonuses > 0 ? `
+                                <div class="payslip-row">
+                                    <span>Primes:</span>
+                                    <strong style="color: var(--success-color);">+${formatAmount(payslip.bonuses)}</strong>
+                                </div>
+                            ` : ''}
+                            ${payslip.deductions > 0 ? `
+                                <div class="payslip-row">
+                                    <span>Déductions:</span>
+                                    <strong style="color: var(--pending-color);">-${formatAmount(payslip.deductions)}</strong>
+                                </div>
+                            ` : ''}
+                            <div class="payslip-row payslip-total">
+                                <span>Salaire net:</span>
+                                <strong>${formatAmount(payslip.netSalary)}</strong>
+                            </div>
+                        </div>
+                        <div class="payslip-actions">
+                            <button class="btn-icon" title="Voir détails" onclick="viewPayslipDetails('${payslip.id}')">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                            <button class="btn-icon" title="Télécharger PDF" onclick="downloadPayslipPDF('${payslip.id}')">
+                                <i class="ri-download-line"></i>
+                            </button>
+                            <button class="btn-icon" title="Imprimer" onclick="printPayslip('${payslip.id}')">
+                                <i class="ri-printer-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Remplir le select des employés
+        function populateEmployeeSelect() {
+            const select = document.getElementById('employee');
+            if (!select) return;
+
+            const employees = AppData.getEmployees();
+            const currentUser = AppData.getCurrentUser();
+
+            select.innerHTML = '<option value="">Sélectionnez un employé</option>';
+            
+            let employeesToShow = employees;
+            if (!AppData.canViewAllEmployees()) {
+                employeesToShow = employees.filter(e => e.id === currentUser.id);
+            }
+
+            employeesToShow.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = `${employee.firstName} ${employee.lastName} (${employee.id}) - ${getRoleLabel(employee.role)}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Remplir le select des mois
+        function populateMonthSelect(payslips) {
+            const select = document.getElementById('payslipMonth');
+            if (!select) return;
+
+            const months = [...new Set(payslips.map(p => p.period))].sort().reverse();
+            months.forEach(month => {
+                const date = new Date(month + '-01');
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+                select.appendChild(option);
+            });
+        }
+
+        // Gestion du formulaire
+        const payslipForm = document.getElementById('generatePayslipForm');
+        if (payslipForm) {
+            payslipForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                if (!AppData.canViewAllEmployees()) {
+                    alert('Vous n\'avez pas les permissions pour générer une fiche de paie.');
+                    return;
+                }
+
+                const formData = {
+                    employeeId: document.getElementById('employee').value,
+                    period: document.getElementById('payPeriod').value,
+                    grossSalary: document.getElementById('grossSalary').value,
+                    bonuses: document.getElementById('bonuses').value || 0,
+                    deductions: document.getElementById('deductions').value || 0
+                };
+
+                if (!formData.employeeId || !formData.period || !formData.grossSalary) {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                    return;
+                }
+
+                try {
+                    AppData.addPayslip(formData);
+                    alert('Fiche de paie générée avec succès !');
+                    closePayslipModal();
+                    loadPayslips();
+                } catch (error) {
+                    alert('Erreur: ' + error.message);
+                }
+            });
+        }
+
+        // Recherche et filtres
+        const searchInput = document.getElementById('payslipSearch');
+        const monthSelect = document.getElementById('payslipMonth');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterPayslips);
+        }
+        if (monthSelect) {
+            monthSelect.addEventListener('change', filterPayslips);
+        }
+
+        function filterPayslips() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedMonth = monthSelect.value;
+            const allPayslips = AppData.getPayslips();
+            const employees = AppData.getEmployees();
+            const currentUser = AppData.getCurrentUser();
+
+            let filtered = allPayslips;
+            
+            // Filtrer par permissions
+            if (!AppData.canViewAllEmployees()) {
+                filtered = filtered.filter(p => p.employeeId === currentUser.id);
+            }
+
+            // Filtrer par mois
+            if (selectedMonth) {
+                filtered = filtered.filter(p => p.period === selectedMonth);
+            }
+
+            // Filtrer par recherche
+            if (searchTerm) {
+                filtered = filtered.filter(p => {
+                    const employee = employees.find(e => e.id === p.employeeId);
+                    return employee && (
+                        employee.firstName.toLowerCase().includes(searchTerm) ||
+                        employee.lastName.toLowerCase().includes(searchTerm) ||
+                        p.employeeName.toLowerCase().includes(searchTerm)
+                    );
+                });
+            }
+
+            renderPayslips(filtered, employees);
+        }
+
+        // Actions
+        function viewPayslipDetails(id) {
+            const payslip = AppData.getPayslips().find(p => p.id === id);
+            if (!payslip) return;
+
+            alert(`Détails de la fiche de paie:\n\n` +
+                  `Employé: ${payslip.employeeName}\n` +
+                  `Période: ${payslip.period}\n` +
+                  `Salaire brut: ${formatAmount(payslip.grossSalary)}\n` +
+                  `Primes: ${formatAmount(payslip.bonuses)}\n` +
+                  `Déductions: ${formatAmount(payslip.deductions)}\n` +
+                  `Salaire net: ${formatAmount(payslip.netSalary)}`);
+        }
+
+        function downloadPayslipPDF(id) {
+            const payslip = AppData.getPayslips().find(p => p.id === id);
+            if (!payslip) return;
+            
+            const employee = AppData.getEmployeeById(payslip.employeeId);
+            if (!employee) return;
+            
+            PDFExport.generatePayslipPDF(payslip, employee);
+        }
+
+        function printPayslip(id) {
+            downloadPayslipPDF(id);
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+
+        // Ouvrir le modal
+        const generateBtn = document.querySelector('.btn-primary[onclick*="generatePayslipModal"]');
+        if (generateBtn) {
+            generateBtn.setAttribute('onclick', '');
+            generateBtn.addEventListener('click', () => {
+                if (!AppData.canViewAllEmployees()) {
+                    alert('Vous n\'avez pas les permissions pour générer une fiche de paie.');
+                    return;
+                }
+                const modal = document.getElementById('generatePayslipModal');
+                modal.style.display = 'block';
+                modal.classList.add('active');
+                const now = new Date();
+                document.getElementById('payPeriod').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            });
+        }
+
+        // Fermer le modal en cliquant en dehors
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'generatePayslipModal') {
+                closePayslipModal();
+            }
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPayslips();
+        });
+    </script>
+</body>
+</html>

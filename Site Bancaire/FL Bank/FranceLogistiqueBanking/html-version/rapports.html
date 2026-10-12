@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapports - Auvergne Finance</title>
+    <script>
+        (function(){
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', t);
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="js/theme.js" defer></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">
+                        <img src="assets/logosansfond.svg" alt="Auvergne Finances Logo" class="logo-img">
+                    </div>
+                    <div class="brand">
+                        <h1>Auvergne Finance</h1>
+                        <p>Trans'Auvergne</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <span class="nav-icon"><i class="ri-dashboard-line"></i></span>
+                            Tableau de Bord
+                        </a>
+                    </li>
+                    <li>
+                        <a href="employes.html">
+                            <span class="nav-icon"><i class="ri-team-line"></i></span>
+                            Employés
+                        </a>
+                    </li>
+                    <li>
+                        <a href="transactions.html">
+                            <span class="nav-icon"><i class="ri-exchange-funds-line"></i></span>
+                            Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="fiches-paie.html">
+                            <span class="nav-icon"><i class="ri-file-list-3-line"></i></span>
+                            Fiches de Paie
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="rapports.html">
+                            <span class="nav-icon"><i class="ri-line-chart-line"></i></span>
+                            Rapports
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="page-header">
+                <h2>Rapports Financiers</h2>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                    </div>
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="ri-sun-line light-icon"></i>
+                        <i class="ri-moon-line dark-icon"></i>
+                    </button>
+                    <button class="btn-outline" onclick="AuthSystem.logout()" title="Déconnexion">
+                        <i class="ri-logout-box-line"></i>
+                    </button>
+                    <div class="report-period">
+                        <button class="btn-outline">
+                            <i class="ri-calendar-line"></i> Mois
+                        </button>
+                        <button class="btn-outline active">
+                            <i class="ri-calendar-2-line"></i> Trimestre
+                        </button>
+                        <button class="btn-outline">
+                            <i class="ri-calendar-check-line"></i> Année
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Financial Summary -->
+            <section class="financial-summary" id="financialSummary">
+                <div class="summary-card">
+                    <h3>
+                        <i class="ri-money-euro-circle-line"></i>
+                        Dépenses Totales
+                    </h3>
+                    <div class="summary-value" id="totalExpenses">€0.00</div>
+                    <div class="summary-details">
+                        <div class="detail-item">
+                            <span>Ce trimestre</span>
+                            <span class="amount" id="currentQuarterExpenses">€0.00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Trimestre précédent</span>
+                            <span class="amount" id="previousQuarterExpenses">€0.00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Variation</span>
+                            <span id="expensesVariation" class="variation">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <h3>
+                        <i class="ri-team-line"></i>
+                        Masse Salariale
+                    </h3>
+                    <div class="summary-value" id="totalSalaries">€0.00</div>
+                    <div class="summary-details">
+                        <div class="detail-item">
+                            <span>Ce trimestre</span>
+                            <span class="amount" id="currentQuarterSalaries">€0.00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Trimestre précédent</span>
+                            <span class="amount" id="previousQuarterSalaries">€0.00</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Variation</span>
+                            <span id="salariesVariation" class="variation">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <h3>
+                        <i class="ri-user-line"></i>
+                        Effectif
+                    </h3>
+                    <div class="summary-value" id="totalEmployees">0</div>
+                    <div class="summary-details">
+                        <div class="detail-item">
+                            <span>Chauffeurs</span>
+                            <span class="amount" id="totalDrivers">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Administratif</span>
+                            <span class="amount" id="totalAdmin">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Total</span>
+                            <span class="amount" id="totalStaff">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Detailed Reports -->
+            <section class="report-sections">
+                <div class="report-nav">
+                    <button class="report-tab active" data-tab="overview">Vue d'ensemble</button>
+                    <button class="report-tab" data-tab="salaries">Analyse des salaires</button>
+                    <button class="report-tab" data-tab="employees">Par employé</button>
+                    <button class="report-tab" data-tab="transactions">Transactions</button>
+                </div>
+
+                <div class="report-content">
+                    <!-- Vue d'ensemble -->
+                    <div id="overviewTab" class="report-tab-content active">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Catégorie</th>
+                                    <th>Ce trimestre</th>
+                                    <th>Trimestre précédent</th>
+                                    <th>Variation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overviewTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center">Chargement des données...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Analyse des salaires -->
+                    <div id="salariesTab" class="report-tab-content">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Employé</th>
+                                    <th>Poste</th>
+                                    <th>Mois</th>
+                                    <th>Salaire brut</th>
+                                    <th>Salaire net</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salariesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">Chargement des données...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Par employé -->
+                    <div id="employeesTab" class="report-tab-content">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Employé</th>
+                                    <th>Poste</th>
+                                    <th>Solde actuel</th>
+                                    <th>Total reçu</th>
+                                    <th>Nb. fiches de paie</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">Chargement des données...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Transactions -->
+                    <div id="transactionsTab" class="report-tab-content">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Montant</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center">Chargement des données...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Export Options -->
+            <section class="export-section">
+                <h3>Exporter le rapport</h3>
+                <div class="export-options">
+                    <button class="btn-outline" onclick="exportReport('excel')">
+                        <i class="ri-file-excel-2-line"></i>
+                        <span>Excel</span>
+                    </button>
+                    <button class="btn-outline" onclick="exportReport('pdf')">
+                        <i class="ri-file-pdf-line"></i>
+                        <span>PDF</span>
+                    </button>
+                    <button class="btn-outline" onclick="exportReport('email')">
+                        <i class="ri-mail-send-line"></i>
+                        <span>Envoyer par email</span>
+                    </button>
+                </div>
+            </section>
+            <footer class="main-footer">
+                <p>Version 1.0.3 - Virtuel</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/app-data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-guard.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/pdf-export.js"></script>
+    <script>
+        function exportReport(format) {
+            const stats = calculateStatistics();
+            const currentUser = AppData.getCurrentUser();
+            const now = new Date();
+            const period = `T${getQuarter(now)}-${now.getFullYear()}`;
+            
+            const reportData = {
+                period: period,
+                totalExpenses: stats.currentQuarterExpenses,
+                totalSalaries: stats.currentQuarterSalaries,
+                totalEmployees: stats.totalEmployees,
+                categories: [
+                    { name: 'Salaires', amount: stats.currentQuarterSalaries },
+                    { name: 'Autres dépenses', amount: stats.currentQuarterExpenses - stats.currentQuarterSalaries },
+                    { name: 'Total', amount: stats.currentQuarterExpenses }
+                ]
+            };
+
+            if (format === 'pdf') {
+                PDFExport.generateReportPDF(reportData);
+            } else if (format === 'excel') {
+                PDFExport.generateReportExcel(reportData);
+            } else if (format === 'email') {
+                const email = prompt('Entrez l\'adresse email pour envoyer le rapport:', currentUser.email || '');
+                if (email) {
+                    PDFExport.sendReportByEmail(reportData, email);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
