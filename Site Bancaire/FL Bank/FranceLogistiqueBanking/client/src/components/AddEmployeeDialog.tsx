@@ -1,4 +1,3 @@
-```tsx
 import { useState } from "react";
 import {
   Dialog,
@@ -212,4 +211,3 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
     </Dialog>
   );
 }
-```
