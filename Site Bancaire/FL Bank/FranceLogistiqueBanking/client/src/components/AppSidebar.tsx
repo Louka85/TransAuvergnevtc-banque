@@ -70,9 +70,9 @@ export function AppSidebar() {
 </div>
           <div>
             <h1 className="font-display font-bold text-lg text-sidebar-foreground">
-              FL Banking
+              Trans'Auvergne Banking
             </h1>
-            <p className="text-xs text-muted-foreground">France Logistique</p>
+            <p className="text-xs text-muted-foreground">Trans'Auvergne VTC</p>
           </div>
         </div>
       </SidebarHeader>
