@@ -1,4 +1,3 @@
-
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { desc } from "drizzle-orm";
@@ -72,6 +71,50 @@ app.get("/api/employees", async (_req, res) => {
     });
   }
 });
+
+
+  app.post("/api/employees", async (req, res) => {
+    try {
+      const { firstName, lastName, email, role, balance, bonus, status } =
+        req.body;
+
+      if (
+        !firstName?.trim() ||
+        !lastName?.trim() ||
+        !email?.trim() ||
+        !role ||
+        balance === undefined ||
+        !Number.isFinite(Number(balance)) ||
+        Number(balance) < 0
+      ) {
+        return res.status(400).json({
+          error: "Veuillez renseigner des informations valides.",
+        });
+      }
+
+      const [newEmployee] = await db
+        .insert(employees)
+        .values({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim().toLowerCase(),
+          role,
+          balance: Number(balance).toFixed(2),
+          bonus: Number.isInteger(Number(bonus)) ? Number(bonus) : 0,
+          status: status === "inactive" ? "inactive" : "active",
+        })
+        .returning();
+
+      res.status(201).json(newEmployee);
+    } catch (error) {
+      console.error("Employee creation error:", error);
+
+      res.status(500).json({
+        error: "Impossible de créer l'employé. Vérifiez notamment si son adresse e-mail existe déjà.",
+      });
+    }
+  });
+
   
   const httpServer = createServer(app);
   return httpServer;
