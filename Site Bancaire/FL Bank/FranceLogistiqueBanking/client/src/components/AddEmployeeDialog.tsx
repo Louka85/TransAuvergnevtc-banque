@@ -1,3 +1,4 @@
+```tsx
 import { useState } from "react";
 import {
   Dialog,
@@ -22,11 +23,14 @@ import { Plus } from "lucide-react";
 
 interface AddEmployeeDialogProps {
   onAdd?: (employee: {
+    id: string;
     firstName: string;
     lastName: string;
     email: string;
     role: string;
     balance: string;
+    bonus: number;
+    status: string;
   }) => void;
 }
 
@@ -37,16 +41,60 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [balance, setBalance] = useState("0.00");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAdd?.({ firstName, lastName, email, role, balance });
-    setOpen(false);
+  const resetForm = () => {
     setFirstName("");
     setLastName("");
     setEmail("");
     setRole("");
     setBalance("0.00");
+    setError("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/employees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          role,
+          balance,
+          bonus: 0,
+          status: "active",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Impossible d'enregistrer cet employé."
+        );
+      }
+
+      onAdd?.(data);
+      resetForm();
+      setOpen(false);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Une erreur est survenue."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,6 +105,7 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
           Ajouter Employé
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
@@ -65,6 +114,7 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
               Ajoutez un nouvel employé au système de gestion.
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -78,6 +128,7 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
                   data-testid="input-first-name"
                 />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="lastName">Nom</Label>
                 <Input
@@ -90,6 +141,7 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
                 />
               </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -102,6 +154,7 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
                 data-testid="input-email"
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="role">Rôle</Label>
               <Select value={role} onValueChange={setRole} required>
@@ -117,26 +170,41 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="balance">Solde Initial (€)</Label>
+              <Label htmlFor="balance">Solde initial (€)</Label>
               <Input
                 id="balance"
                 type="number"
+                min="0"
                 step="0.01"
                 value={balance}
                 onChange={(e) => setBalance(e.target.value)}
-                placeholder="0.00"
                 required
                 data-testid="input-balance"
               />
             </div>
           </div>
+
+          {error && (
+            <p className="text-sm text-destructive mb-4">{error}</p>
+          )}
+
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={loading}
+            >
               Annuler
             </Button>
-            <Button type="submit" data-testid="button-submit-employee">
-              Ajouter
+            <Button
+              type="submit"
+              disabled={loading || !role}
+              data-testid="button-submit-employee"
+            >
+              {loading ? "Enregistrement..." : "Ajouter"}
             </Button>
           </DialogFooter>
         </form>
@@ -144,3 +212,4 @@ export function AddEmployeeDialog({ onAdd }: AddEmployeeDialogProps) {
     </Dialog>
   );
 }
+```
