@@ -61,9 +61,13 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary text-primary-foreground">
-            <Truck className="w-6 h-6" />
-          </div>
+          <div className="flex items-center justify-center w-10 h-10 rounded-md overflow-hidden">
+  <img
+    src="https://github.com/Louka85/TransAuvergnevtc-banque/raw/refs/heads/main/Logos/512%20x%20512%20.png"
+    alt="FL Banking"
+    className="w-full h-full object-contain"
+  />
+</div>
           <div>
             <h1 className="font-display font-bold text-lg text-sidebar-foreground">
               FL Banking
