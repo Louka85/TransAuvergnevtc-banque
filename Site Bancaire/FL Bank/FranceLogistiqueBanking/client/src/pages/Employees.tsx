@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { EmployeeCard } from "@/components/EmployeeCard";
-import { AddEmployeeDialog } from "@/components/AddEmployeeDialog";
+import { AddEmployeeDialog } from "../components/AddEmployeeDialog";
 import { EditEmployeeDialog } from "@/components/EditEmployeeDialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
