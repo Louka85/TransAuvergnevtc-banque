@@ -1,30 +1,67 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { EmployeeCard } from "@/components/EmployeeCard";
 import { AddEmployeeDialog } from "@/components/AddEmployeeDialog";
 import { EditEmployeeDialog } from "@/components/EditEmployeeDialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
-// TODO: Replace mock data with real backend data.
-const mockEmployees = [
-  {
-    id: "1",
-    firstName: "Marie",
-    lastName: "Martin",
-    email: "marie.martin@fl.fr",
-    role: "Gestionnaire",
-    balance: "0.00",
-    bonus: 0,
-    status: "active",
-  },
-];
+type Employee = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  balance: string;
+  bonus: number;
+  status: string;
+};
 
 export default function Employees() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [employees, setEmployees] = useState(mockEmployees);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [editingEmployee, setEditingEmployee] =
-    useState<(typeof mockEmployees)[0] | null>(null);
+    useState<Employee | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadEmployees() {
+      try {
+        const response = await fetch("/api/employees");
+
+        if (!response.ok) {
+          throw new Error("Impossible de charger les employés");
+        }
+
+        const data: Employee[] = await response.json();
+
+        if (!cancelled) {
+          setEmployees(data);
+          setError(false);
+        }
+      } catch (err) {
+        console.error("Erreur de chargement des employés :", err);
+
+        if (!cancelled) {
+          setError(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadEmployees();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filteredEmployees = employees.filter(
     (emp) =>
@@ -88,20 +125,34 @@ export default function Employees() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredEmployees.map((employee) => (
-          <EmployeeCard
-            key={employee.id}
-            {...employee}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+      {error && (
+        <p className="text-destructive">
+          Impossible de charger les employés depuis le serveur.
+        </p>
+      )}
 
-      {filteredEmployees.length === 0 && (
+      {loading ? (
+        <p className="text-muted-foreground">Chargement des employés...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredEmployees.map((employee) => (
+            <EmployeeCard
+              key={employee.id}
+              {...employee}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
+
+      {!loading && !error && filteredEmployees.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Aucun employé trouvé</p>
+          <p className="text-muted-foreground">
+            {searchQuery
+              ? "Aucun employé ne correspond à la recherche."
+              : "Aucun employé enregistré pour le moment."}
+          </p>
         </div>
       )}
 
