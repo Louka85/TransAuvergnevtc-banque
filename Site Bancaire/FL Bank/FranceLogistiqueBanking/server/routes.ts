@@ -58,6 +58,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+app.get("/api/employees", async (_req, res) => {
+  try {
+    const employeeRows = await db
+      .select()
+      .from(employees);
+
+    res.json(employeeRows);
+  } catch (error) {
+    console.error("Employees API error:", error);
+    res.status(500).json({
+      error: "Unable to load employees",
+    });
+  }
+});
+  
   const httpServer = createServer(app);
   return httpServer;
 }
