@@ -111,7 +111,11 @@ export default function Employees() {
           </h1>
         </div>
 
-        <AddEmployeeDialog />
+        <AddEmployeeDialog
+  onAdd={(newEmployee) => {
+    setEmployees((current) => [newEmployee, ...current]);
+  }}
+/>
       </div>
 
       <div className="relative max-w-md">
