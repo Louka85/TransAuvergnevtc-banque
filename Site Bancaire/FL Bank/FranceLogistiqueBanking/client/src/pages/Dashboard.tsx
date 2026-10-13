@@ -1,24 +1,79 @@
+
+import { useEffect, useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { TransactionTable } from "@/components/TransactionTable";
-import { Users, ArrowLeftRight, CreditCard, TrendingUp } from "lucide-react";
+import {
+  Users,
+  ArrowLeftRight,
+  CreditCard,
+  TrendingUp,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-//todo: remove mock functionality
-const mockStats = {
-  totalEmployees: 47,
-  pendingTransfers: 0,
-  totalBalance: "0.00",
-  monthlyGrowth: "+0%",
+type DashboardData = {
+  totalEmployees: number;
+  pendingTransfers: number;
+  totalBalance: string;
+  monthlyGrowth: string;
+  recentTransactions: any[];
 };
 
-//todo: remove mock functionality
-const mockRecentTransactions: any[] = [];
-
 export default function Dashboard() {
+  const [stats, setStats] = useState<DashboardData>({
+    totalEmployees: 0,
+    pendingTransfers: 0,
+    totalBalance: "0.00",
+    monthlyGrowth: "+0%",
+    recentTransactions: [],
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadDashboard() {
+      try {
+        const response = await fetch("/api/dashboard");
+
+        if (!response.ok) {
+          throw new Error("Erreur API");
+        }
+
+        const data: DashboardData = await response.json();
+
+        if (!cancelled) {
+          setStats(data);
+          setError(false);
+        }
+      } catch (err) {
+        console.error("Erreur de chargement du tableau de bord :", err);
+
+        if (!cancelled) {
+          setError(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-display" data-testid="text-page-title">
+        <h1
+          className="text-3xl font-bold font-display"
+          data-testid="text-page-title"
+        >
           Tableau de Bord
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -26,28 +81,37 @@ export default function Dashboard() {
         </p>
       </div>
 
+      {error && (
+        <p className="text-destructive">
+          Impossible de charger les données. Vérifiez la connexion au serveur.
+        </p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Employés"
-          value={mockStats.totalEmployees}
+          value={loading ? "..." : stats.totalEmployees}
           icon={Users}
-          description="Actifs dans le système"
+          description="Employés enregistrés"
         />
+
         <StatCard
           title="Transferts en Attente"
-          value={mockStats.pendingTransfers}
+          value={loading ? "..." : stats.pendingTransfers}
           icon={ArrowLeftRight}
           description="À valider"
         />
+
         <StatCard
           title="Solde Total"
-          value={`€${mockStats.totalBalance}`}
+          value={loading ? "..." : `€${stats.totalBalance}`}
           icon={CreditCard}
-          trend={{ value: mockStats.monthlyGrowth, isPositive: true }}
+          trend={{ value: stats.monthlyGrowth, isPositive: true }}
         />
+
         <StatCard
           title="Croissance"
-          value={mockStats.monthlyGrowth}
+          value={loading ? "..." : stats.monthlyGrowth}
           icon={TrendingUp}
           description="Ce mois-ci"
         />
@@ -57,12 +121,23 @@ export default function Dashboard() {
         <CardHeader>
           <CardTitle>Transactions Récentes</CardTitle>
         </CardHeader>
+
         <CardContent>
-          {mockRecentTransactions.length > 0 ? (
-            <TransactionTable transactions={mockRecentTransactions} />
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">
+                Chargement des transactions...
+              </p>
+            </div>
+          ) : stats.recentTransactions.length > 0 ? (
+            <TransactionTable
+              transactions={stats.recentTransactions}
+            />
           ) : (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Aucune transaction pour le moment</p>
+              <p className="text-muted-foreground">
+                Aucune transaction pour le moment
+              </p>
             </div>
           )}
         </CardContent>
