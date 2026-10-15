@@ -78,22 +78,28 @@ export default function Employees() {
     }
   };
 
-  const handleSave = (updatedEmployee: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
-  }) => {
-    setEmployees((current) =>
-      current.map((emp) =>
-        emp.id === updatedEmployee.id
-          ? { ...emp, ...updatedEmployee }
-          : emp
-      )
-    );
-    setEditOpen(false);
-  };
+  
+const handleSave = (updatedEmployee: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  balance: string;
+  bonus: number;
+  status: string;
+}) => {
+  setEmployees((current) =>
+    current.map((emp) =>
+      emp.id === updatedEmployee.id
+        ? { ...emp, ...updatedEmployee }
+        : emp
+    )
+  );
+
+  setEditOpen(false);
+};
+
 
   const handleDelete = (id: string) => {
     setEmployees((current) => current.filter((emp) => emp.id !== id));
