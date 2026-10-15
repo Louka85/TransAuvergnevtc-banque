@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "./db";
 import { employees, transactions } from "@shared/schema";
 
@@ -111,6 +111,49 @@ app.get("/api/employees", async (_req, res) => {
 
       res.status(500).json({
         error: "Impossible de créer l'employé. Vérifiez notamment si son adresse e-mail existe déjà.",
+      });
+    }
+  });
+
+
+  app.put("/api/employees/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { firstName, lastName, email, role } = req.body;
+
+      if (
+        !firstName?.trim() ||
+        !lastName?.trim() ||
+        !email?.trim() ||
+        !role
+      ) {
+        return res.status(400).json({
+          error: "Veuillez renseigner tous les champs obligatoires.",
+        });
+      }
+
+      const [updatedEmployee] = await db
+        .update(employees)
+        .set({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim().toLowerCase(),
+          role,
+        })
+        .where(eq(employees.id, id))
+        .returning();
+
+      if (!updatedEmployee) {
+        return res.status(404).json({
+          error: "Employé introuvable.",
+        });
+      }
+
+      res.json(updatedEmployee);
+    } catch (error) {
+      console.error("Employee update error:", error);
+      res.status(500).json({
+        error: "Impossible de modifier l'employé. Vérifiez notamment si son adresse e-mail existe déjà.",
       });
     }
   });
